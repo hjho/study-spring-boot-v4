@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>에러 메시지 관리 (한국어)</comment>
+    
+	<entry key="E001">URL을 다시 확인해주세요.</entry>
+	<entry key="E002">값을 입력해주세요.</entry>
+	<entry key="E003">{0}은(는) 필수 입력값입니다.</entry>
+	<entry key="E004">인증에 실패했습니다. 남은 횟수: {0}회</entry>
+	
+</properties>

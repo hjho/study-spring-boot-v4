@@ -1,6 +1,82 @@
+logging:
+  level:
+    io.github.hjho: debug
+    org.hibernate.orm.jdbc.bind: TRACE
+
 server:
   port: 8090
 
 spring:
   application:
     name: ver4-jpa
+
+  # spring.datasource.hikari
+  datasource:
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost/studyjpa?characterEncoding=utf8
+      username: study
+      password: study1234
+      pool-name: mysql-pool
+      maximum-pool-size: 10
+      minimum-idle: 10
+      connection-timeout: 1000  #1s
+      
+  # spring.jpa
+  jpa:
+    # 트랜잭션 종료 후에도 영속성 컨텍스트와 DB 커넥션을 뷰 렌더링(API 응답) 시점까지 유지하여,
+    # Lazy Loading(지연 로딩)으로 인한 LazyInitializationException을 방지하고 개발 편의성을 높이기 위해 사용.
+    # true (기본값)
+    #      편의성: 트랜잭션이 끝난 후 View 레이어(Controller, Template 등)에서 연관된 엔티티를 조회해도 지연 로딩이 작동하여 데이터를 가져올 수 있음.
+    #      예외 방지: LazyInitializationException 발생 없이 편리하게 연관 객체에 접근
+    # false (권장)
+    #      성능 최적화: 트랜잭션 종료 시 커넥션을 즉시 반납하여 긴 커넥션 점유로 인한 DB 커넥션 풀 고갈을 방지.
+    #      구조적 안정성: 복잡한 API에서 N+1 문제를 유발할 수 있는 지연 로딩을 제거하고, Fetch Join 등을 통해 명시적인 데이터 로딩을 유도
+    open-in-view: false
+    
+    # 엔티티를 기반으로 데이터베이스 스키마를 자동으로 생성할지 여부를 결정하는 속성.
+    # generate-ddl이 스키마 생성의 활성화/비활성화를 제어한다면, ddl-auto는 구체적인 동작을 지정.
+    # generate-ddl 보다 properties.hibernate.hbm2ddl.auto 가 우선순위 더 높음.
+    generate-ddl: false # true: update, false: none
+    
+    database: mysql
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+    properties:
+      hibernate:
+#        format_sql: true       # log 정렬
+#        highlight_sql: true    # log 색 표시
+#        use_sql_comments: true # log 주석 출력
+
+        hbm2ddl.auto: validate    # 엔티티와 DB 매핑만 검증.
+#        hbm2ddl.auto: none        # 아무 작업 안 함 (기본값)
+#        hbm2ddl.auto: update      # 변경된 스키마 반영.
+#        hbm2ddl.auto: create      # 기존 테이블 삭제 후 다시 생성.
+#        hbm2ddl.auto: create-drop # 시작 시 생성, 종료 시 삭제.
+
+        # JPA 엔티티의 논리적 이름을 실제 DB 테이블/컬럼명(물리명)으로 변환하는 전략을 설정.
+        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        #    org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        #        Java의 카멜케이스(userName)를 데이터베이스의 스네이크케이스(user_name)로 자동 변환합니다.
+        #    org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        #        논리적 이름을 변경하지 않고 물리적 이름으로 그대로 사용합니다. (Java 필드명과 DB 컬럼명이 같아야 함). 
+
+        # JPA 엔티티나 필드에 이름(@Table, @Column)을 명시하지 않았을 때, Hibernate가 논리적 이름을 결정하는 전략을 설정
+        #implicit_naming_strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+        #    설정없이 기본값을 사용.
+        
+# SWAGGER
+springdoc: 
+  packages-to-scan: io.github.hjho.jpa
+  # packages-to-exclude: com.prjt.blog.sub.controller 
+  # paths-to-match: /api-v1/**
+  # paths-to-exclude: /api-v1/common/voca/**
+  swagger-ui:
+    path: /document #default: /swagger-ui.html
+    # {domain}/document 입력 시 /swagger-ui/index.html로 이동함.
+    tags-sorter: alpha, method
+    operations-sorter: alpha
+#  api-docs: 
+#    path: /api-document #default: /v3/api-docs
+#    enabled: true
