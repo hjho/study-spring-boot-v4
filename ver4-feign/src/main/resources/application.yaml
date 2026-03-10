@@ -1,6 +1,16 @@
+logging:
+  level:
+    io.github.hjho: debug
+
 server:
   port: 8080
 
+project:
+  study-feign: http://localhost:8080
+  study-jpa: http://localhost:8090
+  study-mybatis: http://localhost:9000
+  
 spring:
   application:
     name: ver4-feign
+
