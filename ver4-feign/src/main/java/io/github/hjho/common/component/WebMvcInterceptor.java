@@ -19,8 +19,8 @@ public class WebMvcInterceptor implements HandlerInterceptor {
 			throws Exception {
 		// TODO Auto-generated method stub
 		
-		
-		return HandlerInterceptor.super.preHandle(request, response, handler);
+		log.debug("## preHandle");
+		return true;
 	}
 	
 	@Override
@@ -28,8 +28,7 @@ public class WebMvcInterceptor implements HandlerInterceptor {
 			@Nullable ModelAndView modelAndView) throws Exception {
 		// TODO Auto-generated method stub
 		
-		
-		HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
+		log.debug("## postHandle");
 	}
 	
 	@Override
@@ -37,7 +36,6 @@ public class WebMvcInterceptor implements HandlerInterceptor {
 			@Nullable Exception ex) throws Exception {
 		// TODO Auto-generated method stub
 		
-		
-		HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
+		log.debug("## afterCompletion");
 	}
 }
