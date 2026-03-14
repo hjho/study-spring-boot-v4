@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import io.github.hjho.common.model.ClientInfo;
 import io.github.hjho.jpa.example.test.client.ThreadSleepClient;
 import io.github.hjho.jpa.example.test.model.ThreadSleepRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,10 @@ public class ThreadSleepController {
 	
 	
 	@GetMapping
-	@ResponseBody ResponseEntity<String> threadsleep() {
+	@ResponseBody ResponseEntity<String> threadsleep(ClientInfo clientInfo) {
+		log.debug("### threadsleep: {}", clientInfo);
+		// ### threadsleep: ClientInfo(browser=Chrome, browserVersion=146, os=Windows, osVersion=10, device=Other, mobileYn=N)
+		
 		return threadSleepClient.threadsleep();
 	}
 	

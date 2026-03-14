@@ -21,20 +21,19 @@ public class FeignLogger extends Logger {
 	@Override
 	protected void logRequest(String configKey, Level logLevel, Request request) {
 		
-		String body = request.body() != null ? new String(request.body(), StandardCharsets.UTF_8) : "None"; 
+		String data = request.body() != null ? new String(request.body(), StandardCharsets.UTF_8) : "None"; 
 		
 		String url = request.url();
 		if(url.contains("?")) {
-			String param = url.split("\\?")[1];
-			log.info("Param: {}", param);
-			// Param: teamCode=T01
+			data = url.split("\\?")[1];
 		}
 		
-		// log.info("\n[Feign Request]: {} \n({}) {} \nHeader: {} \nBody: {}", configKey, request.httpMethod(), request.url(), request.headers(), body);
-		// [Feign Request]: AssignPlayerClient#findQueryDslDynamic(AssignPlayerPDto) 
-		// (GET) http://localhost:8080/assign-player/find/dynamic?teamCode=T01 
-		// Header: {X-Request-Source=[study-feign]} 
-		// Body: None
+		log.info("\n# [Feign Request]\n# {} \n#  - request: ({}) {} \n#  - header : {} \n#  - data   : {}", configKey, request.httpMethod(), request.url(), request.headers(), data);
+		// # [Feign Request]
+		// # ThreadSleepClient#threadsleep() 
+		// #  - request: (GET) http://localhost:8090/example/test/thread-sleeps 
+		// #  - header : {request-test=[study-feign]} 
+		// #  - data   : None
 		
 		super.logRequest(configKey, logLevel, request);
 	}
@@ -43,20 +42,21 @@ public class FeignLogger extends Logger {
 	protected Response logAndRebufferResponse(String configKey, Level logLevel, Response response, long elapsedTime)
 			throws IOException {
 		
-		String body = "None";
+		String data = "None";
 		
 		if(response.body() != null && !(response.status() == 204 || response.status() == 205)) {
 			byte[] bodyData = Util.toByteArray(response.body().asInputStream());
-			body = new String(bodyData, StandardCharsets.UTF_8);
+			data = new String(bodyData, StandardCharsets.UTF_8);
 			
 			// 읽은 바디데이터를 다시 Response 객체에 넣어야 비즈니스 로직(Decoder)에서 읽을 수 있음.
 			response = response.toBuilder().body(bodyData).build();
 		}
 		
-		// log.info("\n[Feign Response]: {} \nStatus: {} ({}ms) \nBody: {}", configKey, response.status(), elapsedTime, body);
-		// [Feign Response]: AssignPlayerClient#findQueryDslDynamic(AssignPlayerPDto) 
-		// Status: 200 (19ms) 
-		// Body: {"code":"0000","data":[{,,,}, {,,,}],"message":"정상 처리 되었습니다."}
+		log.info("\n# [Feign Response]\n# {} \n#  - status: {} ({}ms) \n#  - data  : {}", configKey, response.status(), elapsedTime, data);
+		// # [Feign Response]
+		// # ThreadSleepClient#threadsleep() 
+		// #  - status: 200 (5003ms) 
+		// #  - data  : 5 seconds sleep,,,
 		
 		return super.logAndRebufferResponse(configKey, logLevel, response, elapsedTime);
 	}

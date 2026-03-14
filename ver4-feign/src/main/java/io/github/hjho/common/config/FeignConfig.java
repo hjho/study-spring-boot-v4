@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import feign.Logger;
 import feign.RequestInterceptor;
 import io.github.hjho.common.component.FeignHeaderInterceptor;
-import io.github.hjho.common.component.FeignLogger;
 
 @Configuration(proxyBeanMethods = false)
 public class FeignConfig {
@@ -18,12 +17,13 @@ public class FeignConfig {
 	 * FULL   : HEADERS 데이터, Request/Response Body, 메타데이터 전부 기록.
 	 */
 	@Bean Logger.Level feignLoggerLevel() {
-		return Logger.Level.FULL;
+		return Logger.Level.NONE;
 	}
 	
+	/*
 	@Bean Logger logger() {
 		return new FeignLogger();
-	}
+	} */
 	
 	@Bean RequestInterceptor requestInterceptor() {
 		return new FeignHeaderInterceptor();
