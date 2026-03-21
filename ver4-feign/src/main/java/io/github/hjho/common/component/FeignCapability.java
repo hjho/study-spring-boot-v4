@@ -65,11 +65,11 @@ public class FeignCapability implements Capability {
 			
 			if(contentType == null || contentType.contains("x-www-form-urlencoded")) {
 				param = FeignLogUtils.getRequestParam(request);
-		    	
-		    } else if (contentType.contains("json")) {
-		    	reqBody = FeignLogUtils.getRequestBody(request);
-		    }
-		
+				
+			} else if (contentType.contains("json")) {
+				reqBody = FeignLogUtils.getRequestBody(request);
+			}
+			
 		} else {
 			duration = System.currentTimeMillis() - startTime;
 			status = response.status();
@@ -83,9 +83,9 @@ public class FeignCapability implements Capability {
 			message = (e != null) ? e.getMessage() : "";
 		}
 		
-	    FeignLogInfo feignLogInfo = 
-	    		FeignLogInfo.builder()
-	    			.type(type)
+		FeignLogInfo feignLogInfo = 
+				FeignLogInfo.builder()
+					.type(type)
 					.traceId(traceId)
 					.clientName(request.requestTemplate().feignTarget().name())
 					.method(request.httpMethod().name())
@@ -97,8 +97,10 @@ public class FeignCapability implements Capability {
 					.responseBody(resBody)
 					.errorMessage(message)
 				.build();
-	    
-	    log.info("##### [{}]: {}", type, ModelUtils.toJsonString(feignLogInfo));
+		
+		log.info("##### [{}]: {}", type, ModelUtils.toJsonString(feignLogInfo));
+		// ##### [REQUEST_FEIGN]: {"type":"REQUEST_FEIGN","traceId":"","clientName":"thread-sleep","method":"GET","url":"http://localhost:8090/example/test/thread-sleeps?name=heopanman","duration":0,"status":0,"requestParam":"name=heopanman"}
+		// ##### [RESPONSE_FEIGN]: {"type":"RESPONSE_FEIGN","traceId":"","clientName":"thread-sleep","method":"GET","url":"http://localhost:8090/example/test/thread-sleeps?name=heopanman","duration":5004,"status":200,"responseBody":{"seconds":"5","message":"seconds sleep,,,"}}
 	}
 	
 }
