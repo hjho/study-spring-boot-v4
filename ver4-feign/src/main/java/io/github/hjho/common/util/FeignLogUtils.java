@@ -59,9 +59,4 @@ public class FeignLogUtils {
 		return new String(bodyData, StandardCharsets.UTF_8);
 	}
 	
-	
-	
-	
-	
-	
 }
