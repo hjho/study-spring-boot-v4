@@ -1,12 +1,15 @@
 package io.github.hjho.jpa.example.test.controller;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -24,13 +27,27 @@ public class ThreadSleepController {
 
 	
 	@GetMapping
-	public ResponseEntity<String> threadsleep(HttpServletRequest request) throws InterruptedException {
+	public ResponseEntity<Map<String, String>> threadsleep(HttpServletRequest request) throws InterruptedException {
 		
 		log.debug("## header: {}", request.getHeader("request-test"));
 		
 		Thread.sleep(Duration.ofSeconds(5));
 		
-		return ResponseEntity.ok("5 seconds sleep,,,");
+		Map<String, String> output = new HashMap<>();
+		output.put("seconds", "5");
+		output.put("message", "seconds sleep,,,");
+		return ResponseEntity.ok(output);
+	}
+	
+	@PostMapping("/seconds")
+	public ResponseEntity<Map<String, String>> threadsleep2(@RequestBody ThreadSleepRequestDto requestDto) throws InterruptedException {
+		
+		Thread.sleep(Duration.ofSeconds(requestDto.getSeconds()));
+		
+		Map<String, String> output = new HashMap<>();
+		output.put("seconds", "" + requestDto.getSeconds());
+		output.put("message", "seconds sleep,,,");
+		return ResponseEntity.ok(output);
 	}
 	
 	@PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
