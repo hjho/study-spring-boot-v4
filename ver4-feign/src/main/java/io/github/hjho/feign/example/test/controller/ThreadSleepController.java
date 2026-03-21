@@ -28,7 +28,12 @@ public class ThreadSleepController {
 		log.debug("### threadsleep: {}", clientInfo);
 		// ### threadsleep: ClientInfo(browser=Chrome, browserVersion=146, os=Windows, osVersion=10, device=Other, mobileYn=N)
 		
-		return threadSleepClient.threadsleep();
+		return threadSleepClient.threadsleep("heopanman");
+	}
+	
+	@GetMapping("/seconds")
+	@ResponseBody ResponseEntity<String> threadsleep2() {
+		return threadSleepClient.threadsleep2(new ThreadSleepRequestDto(4L));
 	}
 	
 	@GetMapping("/{seconds}")

@@ -35,6 +35,9 @@ dependencies {
 	
 	// Source: https://mvnrepository.com/artifact/com.github.ua-parser/uap-java
 	implementation("com.github.ua-parser:uap-java:1.6.1")
+	
+	// Source: https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.1")
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

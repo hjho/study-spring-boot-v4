@@ -1,6 +1,8 @@
 logging:
   level:
+    feign: debug
     io.github.hjho: debug
+    
 
 server:
   port: 8080

@@ -3,13 +3,21 @@ package io.github.hjho.common.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import feign.Capability;
 import feign.Logger;
 import feign.RequestInterceptor;
+import io.github.hjho.common.component.FeignCapability;
 import io.github.hjho.common.component.FeignHeaderInterceptor;
 
 @Configuration(proxyBeanMethods = false)
 public class FeignConfig {
 
+	/*
+	@Bean Logger logger() {
+		return new FeignLogger();
+	} */
+	
+	
 	/**
 	 * NONE   : 로깅을 하지 않음.
 	 * BASIC  : Request Method, URL, REsponse Status, 실행 시간만 기록.
@@ -20,13 +28,13 @@ public class FeignConfig {
 		return Logger.Level.NONE;
 	}
 	
-	/*
-	@Bean Logger logger() {
-		return new FeignLogger();
-	} */
 	
 	@Bean RequestInterceptor requestInterceptor() {
 		return new FeignHeaderInterceptor();
 	}
 	
+    @Bean Capability feignCapability() {
+        return new FeignCapability();
+    }
+
 }

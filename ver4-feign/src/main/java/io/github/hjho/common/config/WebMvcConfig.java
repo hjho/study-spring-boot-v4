@@ -12,7 +12,7 @@ import io.github.hjho.common.component.ClientInfoArgumentResolver;
 import io.github.hjho.common.component.WebMvcInterceptor;
 import ua_parser.Parser;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class WebMvcConfig implements WebMvcConfigurer {
 	
 	
