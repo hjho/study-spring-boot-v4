@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import io.github.hjho.common.exception.InvalidRequestException;
 import io.github.hjho.common.exception.ResourceNotFoundException;
-import io.github.hjho.common.exception.model.ErrorResponseDto;
+import io.github.hjho.common.exception.model.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,37 +26,37 @@ public class RestControllerExceptionHandler {
 	
 	
 	@ExceptionHandler(InvalidRequestException.class)
-	public ResponseEntity<ErrorResponseDto> handlerInvalidRequestException(InvalidRequestException e, Locale locale) {
+	public ResponseEntity<ErrorResponse> handlerInvalidRequestException(InvalidRequestException e, Locale locale) {
 		this.printErrorLog(e);
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		
 		String errorCode    = e.getErrorCode();
 		String errorMessage = messageSource.getMessage(e.getErrorCode(), e.getArgs(), defaultMessage, locale);
 		
-		ErrorResponseDto responseDto = new ErrorResponseDto(status.value(), errorCode, errorMessage);
+		ErrorResponse responseDto = new ErrorResponse(status.value(), errorCode, errorMessage);
 		return ResponseEntity.status(status).body(responseDto);
 	}
 	
 	
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<ErrorResponseDto> handlerResourceNotFoundException(ResourceNotFoundException e, Locale locale) {
+	public ResponseEntity<ErrorResponse> handlerResourceNotFoundException(ResourceNotFoundException e, Locale locale) {
 		this.printErrorLog(e);
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		
 		String errorCode    = e.getErrorCode();
 		String errorMessage = messageSource.getMessage(errorCode, e.getArgs(), defaultMessage, locale);
 		
-		ErrorResponseDto responseDto = new ErrorResponseDto(status.value(), errorCode, errorMessage);
+		ErrorResponse responseDto = new ErrorResponse(status.value(), errorCode, errorMessage);
 		return ResponseEntity.status(status).body(responseDto);
 	}
 	
 	
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorResponseDto> handlerException(Exception e, Locale locale) {
+	public ResponseEntity<ErrorResponse> handlerException(Exception e, Locale locale) {
 		this.printErrorLog(e);
 		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 		
-		ErrorResponseDto responseDto = new ErrorResponseDto(status.value(), "", "");
+		ErrorResponse responseDto = new ErrorResponse(status.value(), "", "");
 		return ResponseEntity.status(status).body(responseDto);
 	}
 	
