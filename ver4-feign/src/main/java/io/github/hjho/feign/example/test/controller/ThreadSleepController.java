@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/example/code/thread-sleeps")
+@RequestMapping("/example/test/thread-sleeps")
 @RequiredArgsConstructor
 public class ThreadSleepController {
 	

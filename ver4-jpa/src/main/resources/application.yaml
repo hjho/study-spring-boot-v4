@@ -1,10 +1,6 @@
-logging:
-  level:
-    io.github.hjho: debug
-    org.hibernate.orm.jdbc.bind: TRACE
 
 server:
-  port: 8090
+  port: 18090
 
 spring:
   application:

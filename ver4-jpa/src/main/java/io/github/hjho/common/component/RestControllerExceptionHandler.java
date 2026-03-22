@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import io.github.hjho.common.exception.InvalidRequestException;
 import io.github.hjho.common.exception.ResourceNotFoundException;
-import io.github.hjho.common.exception.model.ErrorResponse;
+import io.github.hjho.common.model.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,18 +62,18 @@ public class RestControllerExceptionHandler {
 	
 	
 	private void printErrorLog(Exception e) {
-		log.error("[ERR] [class]  : {}", e.getClass());
-		log.error("[ERR] [cause]  : {}", ((e.getCause() == null) ? "null" : e.getCause().getMessage()));
-		log.error("[ERR] [message]: {}",  e.getMessage());
+		log.error("[ERR] [CLASS]  : {}", e.getClass());
+		log.error("[ERR] [CAUSE]  : {}", ((e.getCause() == null) ? "null" : e.getCause().getMessage()));
+		log.error("[ERR] [MESSAGE]: {}",  e.getMessage());
 		
 		if(onlyMyStack) {
 			for(StackTraceElement element : e.getStackTrace()) {
 				if(element.getClassName().startsWith("io.github.hjho")) {
-					log.error("[ERR] [stack]  : {} #{}", element.getClassName(), element.getLineNumber());
+					log.error("[ERR] [STACK]  : {} #{}", element.getClassName(), element.getLineNumber());
 				}
 			}
 		} else {
-			log.error("[ERR] [stack]  : ", e);
+			log.error("[ERR] [STACK]  : ", e);
 		}
 	}
 }

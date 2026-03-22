@@ -17,7 +17,12 @@ public class WebMvcInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		// TODO Auto-generated method stub
+		String headerValue = request.getHeader("x-requested-with");
+		if(headerValue != null && "XMLHttpRequest".equals(headerValue)) {
+			request.setAttribute("ajaxYn", "Y");
+		} else {
+			request.setAttribute("ajaxYn", "N");
+		}
 		
 		log.debug("## preHandle");
 		return true;

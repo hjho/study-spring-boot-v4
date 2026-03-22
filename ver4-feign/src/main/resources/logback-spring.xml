@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    
+    <property name="LOG_PATTERN" value="%highlight([%d{yyyy-MM-dd HH:mm:ss.SSS}][%-18.-18thread][%-40.40logger][%4L][%-1.-1p]) %m%n" />
+    
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+ 
+<!--
+    <property name="TRNS_DIR_PATH_DEV" value="D://workspace_log/study/jpa" />
+    <property name="PROJECT_NAME" value="study_jpa" />
+    
+    <appender name="SAMPLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-4relative][%-30C][%-5level]%M{35}%L : %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="TRNSFILE_DEV" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+    		<fileNamePattern>${TRNS_DIR_PATH_DEV}/${PROJECT_NAME}_%d{yyyy-MM-dd_HH}.%i.log</fileNamePattern>
+    		<maxFileSize>50MB</maxFileSize>
+    		<maxHistory>5</maxHistory>
+    	</rollingPolicy>
+    	<encoder>
+    		<charset>UTF-8</charset>
+    		<pattern>${LOG_PATTERN}</pattern>
+    	</encoder>
+    </appender>
+    
+    <springProfile name="dev">
+    	<logger name="com.document.study" level="DEBUG" additivity="false">
+    		<appender-ref ref="TRNSFILE_DEV" />
+    	</logger>
+    	<logger name="org.hibernate.sql" level="DEBUG" additivity="false">
+        	<appender-ref ref="TRNSFILE_DEV" />
+    	</logger>
+	    <logger name="org.springframework" level="INFO" additivity="false">
+	        <appender-ref ref="TRNSFILE_DEV" />
+	    </logger>
+    </springProfile>
+-->
+    
+    <logger name="io.github.hjho" level="DEBUG" additivity="false">
+   		<appender-ref ref="CONSOLE" />
+   	</logger>
+    
+    <!-- Spring Logger  -->
+    <logger name="org.springframework" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <!-- springframework
+    <logger name="org.springframework.core" level="ERROR" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    <logger name="org.springframework.beans" level="ERROR" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    <logger name="org.springframework.context" level="ERROR" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    <logger name="org.springframework.web" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    <logger name="org.springframework.tx" level="ERROR" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger> -->
+    
+    <!-- Feign Logger  -->
+    <logger name="feign" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <!-- hikariCP
+    <logger name="com.zaxxer.hikari" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger> -->
+    
+    <!-- hibernate
+    <logger name="org.hibernate.jpa" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    <logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    <logger name="org.hibernate.resource.transaction" level="TRACE" additivity="false">
+		<appender-ref ref="CONSOLE" />
+    </logger>
+    <logger name="org.hibernate.orm.jdbc.bind" level="TRACE" additivity="false">
+		<appender-ref ref="CONSOLE" />
+    </logger> -->
+    
+    <root level="ERROR" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </root>
+    
+</configuration>

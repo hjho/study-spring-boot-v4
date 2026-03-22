@@ -22,22 +22,22 @@ public class FeignCapability implements Capability {
 			long startTime = System.currentTimeMillis();
 			Response response;
 			
-			// 1. 요청 수집
+			// 1. 요청 수집.
 			intercept("REQUEST_FEIGN", request, null, 0, null);
 			
 			try {
-				// 2. 요청 실행
+				// 2. 요청 실행.
 				response = client.execute(request, options);
 			} catch (Exception e) {
-				// 에러 발생 시 수집 로직 (Elastic 전송 등)
+				// 5. 에러 수집.
+				// 서버에서 발생한 Exception (Bad Request)는 잡지 않음.
 				intercept("ERROR_FEIGN", request, null, startTime, e);
 				throw e;
 			}
 			
-			// 응답 바디 Rebuffer (데이터 수집을 위해 필요)
-			byte[] bodyData = null;
+			// 3. 응답 바디.  (재사용 가능하도록 변경)
 			if (response.body() != null) {
-				bodyData = Util.toByteArray(response.body().asInputStream());
+				byte[] bodyData = Util.toByteArray(response.body().asInputStream());
 				response = response.toBuilder().body(bodyData).build();
 			}
 			
@@ -85,15 +85,18 @@ public class FeignCapability implements Capability {
 		
 		FeignLogInfo feignLogInfo = 
 				FeignLogInfo.builder()
+					// 기본 내용.
 					.type(type)
 					.traceId(traceId)
 					.clientName(request.requestTemplate().feignTarget().name())
+					// 요청 내용.
 					.method(request.httpMethod().name())
 					.url(request.url())
 					.requestParam(param)
+					.requestBody(reqBody)
+					// 응답 내용.
 					.status(status)
 					.duration(duration)
-					.requestBody(reqBody)
 					.responseBody(resBody)
 					.errorMessage(message)
 				.build();

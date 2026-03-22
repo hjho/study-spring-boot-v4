@@ -1,4 +1,4 @@
-package io.github.hjho.common.exception.model;
+package io.github.hjho.common.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
