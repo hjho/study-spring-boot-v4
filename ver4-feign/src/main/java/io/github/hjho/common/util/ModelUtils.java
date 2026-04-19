@@ -78,5 +78,14 @@ public class ModelUtils {
     		throw new RuntimeException("JOSN 변환 중 오류가 발생했습니다.", e);
     	}
     }
+    
+    public static <T> T toModel(String jsonString, Class<T> target) {
+    	if (jsonString == null || "".equals(jsonString.trim())) return null;
+    	try {
+    		return getMapper().readValue(jsonString, target);
+    	} catch(Exception e) {
+    		throw new RuntimeException("JOSN 변환 중 오류가 발생했습니다.", e);
+    	}
+    }
 
 }

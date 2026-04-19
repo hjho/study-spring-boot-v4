@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:replace="/test/testHeader :: header"></th:block>
+</head>
+<body>
+	<h1>통신 테스트 페이지 입니다.</h1>
+	<h3>GET, POST (application/x-www-form-urlencoded)</h3>
+	<div>
+		<input type="text" id="requsets" placeholder="Get, Post Test" style="display: inline;"/>
+		<br>
+		<input type="button" onclick="test.requsets('get1')" value="GET1" style="display: inline;"/>
+		<input type="button" onclick="test.requsets('get2')" value="GET2" style="display: inline;"/>
+		<input type="button" onclick="test.requsets('get3')" value="GET3" style="display: inline;"/>
+		<br>
+		<input type="button" onclick="test.requsets('post1')" value="POST1" style="display: inline;"/>
+		<input type="button" onclick="test.requsets('post2')" value="POST2" style="display: inline;"/>
+		<input type="button" onclick="test.requsets('post3')" value="POST3" style="display: inline;"/>
+		<input type="button" onclick="test.requsets('post4')" value="POST4" style="display: inline;"/>
+		<input type="button" onclick="test.requsets('post5')" value="POST5" style="display: inline;"/>
+		<input type="button" onclick="test.requsets3('post8')" value="POST8" style="display: inline;"/>
+	</div>
+	
+	<h3>PUT, PATCH, DELETE (application/x-www-form-urlencoded)</h3>
+	<div>
+		<input type="text" id="requsetsNew" placeholder="Put, Delete Test" style="display: inline;"/>
+		<br>
+		<input type="button" onclick="test.requsetsNew('put')" value="PUT" style="display: inline;"/>
+		<input type="button" onclick="test.requsetsNew('patch')" value="PATCH" style="display: inline;"/>
+		<input type="button" onclick="test.requsetsNew('delete')" value="DELETE" style="display: inline;"/>
+	</div>
+	
+	<h3>jsonView, ResponseBody (application/json)</h3>
+	<div>
+		<input type="text" id="json" placeholder="Json Test" style="display: inline;"/>
+		<br>
+		<input type="button" onclick="test.json('json1')" value="jsonView" style="display: inline;"/>
+		<input type="button" onclick="test.json('json2')" value="ResponseBody" style="display: inline;"/>
+		<input type="button" onclick="test.json('json3')" value="SendObject" style="display: inline;"/>
+		<input type="button" onclick="test.json('json4')" value="PUT" style="display: inline;"/>
+		<input type="button" onclick="test.requsets2('post6')" value="POST6" style="display: inline;"/>
+		<input type="button" onclick="test.requsets2('post7')" value="POST7" style="display: inline;"/>
+	</div>
+	
+	<h3>form element submit</h3>
+	<div>
+		<form id="formSend">
+			<input type="text" name="text" placeholder="Text" style="display: inline;" required/>
+			<br>
+			<input type="text" name="html" placeholder="Html" style="display: inline;" value="<div>Hello World<div>"/>
+			<br>
+			<input type="text" name="script" placeholder="Script" style="display: inline;" value="<script>function test() { alert('hello world!');}</script>"/>
+			<br>
+			<input type="submit" id="form1" value="jsonView" name="json" style="display: inline;"/>
+			<input type="submit" id="form2" value="ResponseBody" name="body" style="display: inline;"/>
+		</form>
+		<form action="/test/exception/view" method="POST">
+			<input type="submit" value="move" style="display: inline;"/>
+		</form>
+	</div>
+	
+</body>
+<script>
+	$(document).ready(function() {
+		$('#formSend').on('submit', function(event) {
+			event.preventDefault();
+			//console.dir(event);
+			const type = event.originalEvent.submitter.id;
+			const name = event.originalEvent.submitter.name;
+			// console.log(type, name);
+			test.form(type);
+		});
+		
+	});
+	
+	$(document).ready(function() {
+		console.log("DOCUMENT READY");
+	});
+	$(window).on('load', function() {
+		console.log("WINDOW LOAD");
+	});
+	$(window).on('beforeunload', function() {
+		return false;
+	});
+	
+	function sendRequest(url, method, input, cbSuccess) {
+		$.ajax(url,
+			// options
+			{
+				method      : (method) ? method : "POST",
+				data        : input,
+				dataType    : "json", 
+				beforeSend  : function(jqXHR, settings) {
+					console.log("[2] AJAX BEFOR SEND:", settings.data);
+					jqXHR.setRequestHeader('header-name', 'header-value');
+					// throw '에러';
+					// return false;
+				}
+			// success
+			}).done(function(output, textStatus, jqXHR) {
+				console.log("[4] AJAX DONE");
+				if(typeof cbSuccess === 'function') {
+					cbSuccess(output);
+				}
+			// error	
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				console.log("[4] AJAX FAIL");
+			// complete
+			}).always(function(output, textStatus, jqXH) {
+				console.log("[5] AJAX ALWAYS");
+			}
+		);
+	}
+	
+	function sendRequestNew(url, method, input, cbSuccess) {
+		$.ajax({
+			// options
+				url         : url,
+				method      : method,
+				data        : input,
+ 				dataType    : "json", 
+				beforeSend  : function(jqXHR, settings) {
+					console.log("INPUT:", settings.data);
+					// throw '에러';
+					// return false;
+				}
+			// success
+			}).done(function(output, textStatus, jqXHR) {
+				cbSuccess(output);
+			// error	
+			}).fail(function(jqXHR) {
+				//console.log("ERROR");
+			// complete
+			}).always(function(output, textStatus, jqXH) {
+				//console.log("COMPLETE");
+			}
+		);
+	}
+	
+	function sendJson(url, input, cbSuccess) {
+		$.ajax({
+			// options
+				url         : url,
+				method      : "POST",
+				data        : JSON.stringify(input),
+				contentType : 'application/json; charset=utf-8',
+				dataType    : "json", 
+				beforeSend  : function(jqXHR, settings) {
+					console.log("INPUT:", settings.data);
+					// throw '에러';
+					// return false;
+				}
+			// success
+			}).done(function(output, textStatus, jqXHR) {
+				if(typeof cbSuccess === 'function') {
+					cbSuccess(output);
+				}
+			// error	
+			}).fail(function(jqXHR) {
+				console.log("[4] ERROR");
+			// complete
+			}).always(function(output, textStatus, jqXH) {
+				//console.log("COMPLETE");
+			}
+		);
+	}
+	
+	function sendForm(url, formEl, cbSuccess) {
+		$.ajax({
+			// options
+				url         : url,
+				method      : "POST",
+				data        : $(formEl).serialize(),
+				dataType    : "json", 
+				beforeSend  : function(jqXHR, settings) {
+					console.log("INPUT:", settings.data);
+					// throw '에러';
+					// return false;
+				}
+			// success
+			}).done(function(output, textStatus, jqXHR) {
+				if(typeof cbSuccess === 'function') {
+					cbSuccess(output);
+				}
+			// error	
+			}).fail(function(jqXHR) {
+				//console.log("ERROR");
+			// complete
+			}).always(function(output, textStatus, jqXH) {
+				//console.log("COMPLETE");
+			}
+		);
+	}
+
+	const test = {
+		requsets: function(method) {
+			const value = $('#requsets').val();
+			const type = (method.startsWith('post')) ? "post" : "get";
+			const input = {
+				param1: value,
+				param2: method,
+			}
+			sendRequest(`/test/send/${method}`, type, input,
+				function(result) {
+					console.log(`RETURN(${method}):`, result);
+				},
+			);
+		},
+		requsets2: function(method) {
+			const value = $('#json').val();
+			const type = (method.startsWith('post')) ? "post" : "get";
+			const inputList = [];
+			inputList.push({
+				param1: value,
+				param2: method,
+			});
+			inputList.push({
+				param1: value,
+				param2: method,
+			});
+			
+			sendJson(`/test/send/${method}`, inputList,
+				function(result) {
+					console.log(`RETURN(${method}):`, result);
+				},
+			);
+		},
+		requsets3: function(method) {
+			const value = $('#requsets').val();
+			const type = (method.startsWith('post')) ? "post" : "get";
+			const inputList = [value+"A", value+"B"];
+			const input = {
+				param: inputList
+			}
+			
+			sendRequest(`/test/send/${method}`, type, input,
+				function(result) {
+					console.log(`RETURN(${method}):`, result);
+				},
+			);
+		},
+		requsetsNew: function(method) {
+			const input = {
+				param1: $('#requsetsNew').val(),
+				param2: method,
+				_methodName: method
+			}
+			sendRequestNew(`/test/send/${method}`, 'post', initParamter(input),
+				function(result) {
+					console.log(`RETURN(${method}):`, result);
+				},
+			);
+		},
+		json: function(type) {
+			let value = $('#json').val();
+			if(type === 'json3') {
+				value = {
+					name: "테스트",
+					code: 1001,
+					value: $('#json').val()
+				}
+			} 
+			if(value) {
+				const input = {
+					text: value,
+					html: '<div>Hello World<div>',
+					script: '<script>function test() { alert("hello world!");}<\/script>',
+				}
+				if(type === 'json4') {
+					input._methodName = "put";
+				}
+				sendJson(`/test/send/${type}`, input,
+					function(result) {
+						console.log(`RETURN(${type}):`, result);
+					},
+				);
+			} 
+		},
+		form: function(type) {
+			sendForm(`/test/send/${type}`, $('#formSend'),
+				function(result) {
+					console.log(`RETURN(${type}):`, result);
+				}
+			);
+		},
+	}
+	
+	function initParamter(object) {
+		let queryString = "";
+		if(typeof object === 'object' && !Array.isArray(object)) {
+			Object.keys(object).map(function(key, index, array) {
+				queryString += (index === 0) ? "" : "&";
+				queryString += key + "=" + encodeURIComponent(object[key]);
+			});
+		}
+		return queryString;
+	}
+	
+</script>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:replace="/common/header :: header"></th:block>
+</head>
+<body>
+	<h1>통신 테스트 페이지 입니다.</h1>
+	<div>
+		<input type="text" id="requsets" placeholder="Get, Post Test" style="display: inline;"/>
+		<br>
+		<button onclick="send();">SUCCESS</button>
+		<button onclick="send_error();">ERROR</button>
+		<br>
+		<button onclick="send_json();">JSON-SUCCESS</button>
+		<button onclick="send_error_json();">JSON-ERROR</button>
+	</div>
+	
+
+	<script>
+		
+		function send() {
+			sendRequest("/example/test/call/api", "get", "", 
+				function(body) {
+					console.log(body);
+				},
+				function(xhr) {
+					console.log(xhr);
+				}
+			);
+		}
+		function send_error() {
+			sendRequest("/example/test/call/api/error", "get", "", 
+				function(body) {
+					console.log(body);
+				},
+				function(xhr) {
+					console.log(xhr);
+				}
+			);
+		}
+		function send_json() {
+			sendRequest("/example/test/call/api/json-view", "get", "", 
+				function(body) {
+					console.log(body);
+				},
+				function(xhr) {
+					console.log(xhr);
+				}
+			);
+		}
+		function send_error_json() {
+			sendRequest("/example/test/call/api/error/json-view", "get", "", 
+				function(body) {
+					console.log(body);
+				},
+				function(xhr) {
+					console.log(xhr);
+				}
+			);
+		}
+	
+	</script>
+	<script>
+		
+	
+		$(document).ready(function() {
+			console.log("DOCUMENT READY");
+		});
+		
+		$(window).on('load', function() {
+			console.log("WINDOW LOAD");
+		});
+		
+		function sendRequest(url, method, input, cbDone, cbFail) {
+			$.ajax(url,
+				// options
+				{
+					method      : (method) ? method : "POST",
+					data        : input,
+					dataType    : "json", 
+					beforeSend  : function(jqXHR, settings) {
+						console.log("[2] AJAX BEFOR SEND:", settings.data);
+						jqXHR.setRequestHeader('header-name', 'header-value');
+						// throw '에러';
+						// return false;
+					}
+				// success
+				}).done(function(output, textStatus, jqXHR) {
+					console.log("[4] AJAX DONE");
+					if(typeof cbDone === 'function') {
+						cbDone(output);
+					}
+				// error	
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					console.log("[4] AJAX FAIL");
+					if(typeof cbFail === 'function') {
+						cbFail(jqXHR);
+					}
+				// complete
+				}).always(function(output, textStatus, jqXH) {
+					console.log("[5] AJAX ALWAYS");
+				}
+			);
+		}
+		
+	</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<th:block th:if="${type == 'template'}">
+		<h1>화면 구성 중 에러가 발생했습니다.</h1>
+	</th:block>
+	
+	<th:block th:unless="${type == 'template'}">
+		<h1>5XX 에러 페이지</h1>
+	</th:block>
+	
+</body>
+	<script type="text/javascript" th:inline="javascript">
+		const type = /*[[${type}]]*/'';
+	</script>
+</html>

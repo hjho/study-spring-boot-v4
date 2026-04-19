@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="sample">
+	<meta charset="UTF-8">
+	<link rel="shortcut icon" href="#">
+	<title>스프링 부트</title>
+	
+	<meta th:name="_csrf" th:content="${_csrf?.token}"/>
+	<meta th:name="_csrf_header" th:content="${_csrf?.headerName}">
+	<meta th:name="_csrf_param" th:content="${_csrf?.parameterName}">
+
+	<!-- Default CSS -->
+	<link rel="stylesheet" type="text/css" href="https://unpkg.com/mvp.css" />
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-4.0.0.js" integrity="sha256-9fsHeVnKBvqh3FB2HYu7g2xseAZ5MlN6Kz/qnkASV8U=" crossorigin="anonymous"></script>
+	
+	<!-- COMMON -->
+	<script type="text/javascript" th:src="@{/js/common.js}"></script>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('form').on('submit', function(event) {
+				const method = $(this).attr('method').toUpperCase();
+				const param  = $("meta[name='_csrf_param']").attr("content");
+				const token  = $("meta[name='_csrf']").attr("content");
+				if((method === 'POST') && param && token) {
+					$(this).append(`<input type="hidden" name="${param}" value="${token}" />`);
+				}
+			})
+		});
+		
+		$(document).ajaxStart(function(event) {
+			console.log("[1] GLOBAL AJAX START:", event);
+			
+		}).ajaxSend(function(event, xhr, settings) {
+	    	console.log("[3] GLOBAL AJAX SEND:", xhr);
+	    	const method = settings.type.toUpperCase();
+			const header = $("meta[name='_csrf_header']").attr("content");
+			const token  = $("meta[name='_csrf']").attr("content");
+			if((method !== 'GET') && header && token) {
+				xhr.setRequestHeader(header, token);
+			}
+		}).ajaxSuccess(function(event, xhr, settings, data) {
+			console.log("[6] GLOBAL AJAX SUCCESS:", data);
+			
+		}).ajaxError(function(event, xhr, settings, thrownError) {
+			console.log("[6] GLOBAL AJAX ERROR:", xhr.responseJSON?.message);
+			
+		}).ajaxComplete(function(event, xhr, settings) {
+			console.log("[7] GLOBAL AJAX COMPLETE");
+			
+		}).ajaxStop(function(event) {
+			console.log("[8] GLOBAL AJAX STOP:", event);
+		});
+		
+		function ajaxExample(url, input) {
+			$.ajax(url,
+				// options
+				{
+					method    : "POST",
+					data      : input,
+					dataType  : "json", 
+					beforeSend: function(jqXHR, settings) {
+						console.log("[2] AJAX BEFOR SEND:", settings.data);
+					}
+				// success
+				}).done(function(output, textStatus, jqXHR) {
+					console.log("[4] AJAX DONE:", output);
+				// error	
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					console.log("[4] AJAX FAIL:", jqXHR.responseJSON?.message);
+				// complete
+				}).always(function(output, textStatus, jqXHR) {
+					console.log("[5] AJAX ALWAYS", textStatus);
+				}
+			);
+		}
+	</script>
+</th:block>
+
+<th:block th:fragment="header">
+	<meta charset="UTF-8">
+	
+	<link rel="icon" href="https://githubassets.com">
+	<title>스프링 부트 테스트</title>
+	
+	<!-- Style -->
+	<link rel="stylesheet" type="text/css" href="https://unpkg.com/mvp.css" />
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-4.0.0.js" integrity="sha256-9fsHeVnKBvqh3FB2HYu7g2xseAZ5MlN6Kz/qnkASV8U=" crossorigin="anonymous"></script>
+	<!-- Common -->
+	<script type="text/javascript" th:src="@{/js/common.js}"></script>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			
+		});
+	</script>
+</th:block>
+</html>

@@ -7,10 +7,8 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.json.JacksonJsonView;
 
@@ -23,9 +21,19 @@ import tools.jackson.databind.module.SimpleModule;
 import ua_parser.Parser;
 
 @Configuration(proxyBeanMethods = false)
-@EnableWebMvc
+//@EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
 	
+	/* HTTP INTERCEPTOR IGNORE */ 
+	private final static String[] EXCLUDE_PATHS = {
+			"/css/**",				// static
+			"/images/**",			// static
+			"/js/**",				// static
+			"/jwt/**",				// JWT public key
+			"/html/**",				// static
+			"/error/**",			// error page
+			"/favicon.*"
+	};
 	
 	@Bean Parser uaParser() {
 		return new Parser();
@@ -40,13 +48,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	}
 	
 	@Bean JacksonJsonView jsonView() {
+		// default: yyyy-MM-ddTHH:mm:ss.SSSSSS
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 		SimpleModule timeModule = new SimpleModule();
 		timeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(formatter));
 		timeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(formatter));
 		
 		JacksonJsonView jsonView = new JacksonJsonView(JsonMapper.builder().addModule(timeModule).build());
-		jsonView.setExtractValueFromSingleKeyModel(false);
+		// default: false;
+		// true : model 의 key 가 없을 경우. hashMap이 key 로 들어감.
+		// false: data 변수명이 key 로 설정됨.
+		jsonView.setExtractValueFromSingleKeyModel(true); 
 		return jsonView;
 	}
 	
@@ -56,8 +68,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(this.webMvcInterceptor())
-				.addPathPatterns("/**")            				// 모든 경로에 적용
-				.excludePathPatterns("/login", "/static/**"); 	// 특정 경로는 제외
+				.addPathPatterns("/**")					// 모든 경로에 적용.
+				.excludePathPatterns(EXCLUDE_PATHS);	// 특정 경로는 제외.
 	}
 	
 	/* 리졸버 설정 */
@@ -71,7 +83,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/**") 				// 브라우저에서 "/static"을 붙이지 않고 바로 "/js/main.js"처럼 접근하고 싶다면.
 				.addResourceLocations("classpath:/static/")
-				// .addResourceHandler("/static/**") 	// 브라우저에서 "/static/js/main.js"라고 호출.
+				// .addResourceHandler("/static/**") 	// 브라우저에서 "/static/js/main.js" 처럼 접근하고 싶다면.
 				// .setCachePeriod(3600); // 선택사항: 1시간 동안 캐싱
 		;
 	} 
