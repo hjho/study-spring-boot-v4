@@ -12,7 +12,7 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
       jdbc-url: jdbc:mysql://localhost/studyjpa?characterEncoding=utf8
       username: study
-      password: study1234
+      password: ENC(6LJkxCloXNsBmhLLIZtPsE7qJSz6+emqCZcZJ0Egk27HtTRHnqIZeNsQs/sixfgf)
       pool-name: mysql-pool
       maximum-pool-size: 10
       minimum-idle: 10
@@ -76,3 +76,8 @@ springdoc:
 #  api-docs: 
 #    path: /api-document #default: /v3/api-docs
 #    enabled: true
+
+# JASYPT
+jasypt:
+  encryptor:
+    password: ${INIT_KEY:default}
