@@ -1,4 +1,4 @@
-package io.github.hjho.jpa.example.encrypt.service;
+package io.github.hjho.jpa.example.crypto.service;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -20,7 +20,6 @@ import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -30,26 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class EncryptService {
-	
-	private final StringEncryptor jasyptStringEncryptor;
-	
-	
-	/**
-	 * JASYPT 암호화 수행. (PBEWithHMACSHA512AndAES_256)
-	 */
-	public String encryptJasypt(String original) {
-		return jasyptStringEncryptor.encrypt(original);
-	}
-	
-	/**
-	 * JASYPT 복호화 수행. (PBEWithHMACSHA512AndAES_256)
-	 */
-	public String decryptJasypt(String encrypted) {
-		return jasyptStringEncryptor.decrypt(encrypted);
-	}
-	
-	/*******************************************************************************************************/
+public class CryptoService {
 	
 	@Value("${crypto.aes256-key}")
 	private String cryptoAes256Key;
@@ -70,10 +50,11 @@ public class EncryptService {
 		
 		return Base64.getEncoder().encodeToString(secretKey.getEncoded());
 	}
+	
 	/**
 	 * AES_256 암호화 수행. (AES/GCM/NoPadding)
 	 */
-	public String encryptAes256(String original) {
+	public String encrypt(String original) {
 		
 		if(StringUtils.isEmpty(original)) return null;
 		
@@ -109,7 +90,7 @@ public class EncryptService {
 	/**
 	 * AES_256 복호화 수행. (AES/GCM/NoPadding)
 	 */
-	public String decryptAes256(String encrypted) {
+	public String decrypt(String encrypted) {
 		
 		if(StringUtils.isEmpty(encrypted)) return null;
 		
@@ -168,7 +149,7 @@ public class EncryptService {
 	 *   - 실무적인 표준: BCrypt
 	 *   - 가장 최신 최첨단 표준: Argon2id
 	 */
-	public String encryptSha256(String original) {
+	public String hashing(String original) {
 		
 		if(StringUtils.isEmpty(original)) return null;
 		

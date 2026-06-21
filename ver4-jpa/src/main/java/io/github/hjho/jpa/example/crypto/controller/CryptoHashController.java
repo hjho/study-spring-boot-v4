@@ -1,4 +1,4 @@
-package io.github.hjho.jpa.example.encrypt.controller;
+package io.github.hjho.jpa.example.crypto.controller;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -8,32 +8,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.github.hjho.jpa.example.encrypt.service.EncryptService;
+import io.github.hjho.jpa.example.crypto.service.CryptoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/example/encrypt/sha256")
-public class EncryptSha256Controller {
+@RequestMapping("/example/crypto/hash")
+public class CryptoHashController {
 	
-	private final EncryptService encryptService;
+	private final CryptoService cryptoService;
+	
 	
 	@GetMapping("/generate-salt")
 	public ResponseEntity<String> generateSalt() throws NoSuchAlgorithmException {
 		
-        String key = encryptService.generateSalt();
+        String key = cryptoService.generateSalt();
         
 		return ResponseEntity.ok(key);
 	}
 	
-	@GetMapping("/encrypt")
-	public ResponseEntity<String> encrypt(@RequestParam String encrypted) {
+	@GetMapping("/ing")
+	public ResponseEntity<String> hashing(@RequestParam String original) {
 		
-		String original = encryptService.encryptSha256(encrypted);
+		String hasging = cryptoService.hashing(original);
 		
-		return ResponseEntity.ok(original);
+		return ResponseEntity.ok(hasging);
 	}
 	
 }
