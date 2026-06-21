@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.hjho.jpa.example.actuator.model.ActuatorTracerResponse;
+import io.github.hjho.jpa.example.actuator.service.ActuatorTracerService;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
 import io.micrometer.tracing.Span;
@@ -24,6 +25,8 @@ public class ActuatorTracerController {
 	
 	private final ObservationRegistry registry;
 	
+	private final ActuatorTracerService actuatorTracerService;
+	
 	
 	@GetMapping
 	public ResponseEntity<ActuatorTracerResponse> call() {
@@ -36,28 +39,38 @@ public class ActuatorTracerController {
 			traceId = before.context().traceId();
 			spanId = before.context().spanId();
 		}
-		log.debug("## before traceId: {}, spanId: {}", traceId, spanId);
+		log.debug("##   before traceId: {}, spanId: {}", traceId, spanId);
 		
 		ActuatorTracerResponse response = ActuatorTracerResponse.builder().traceId(traceId).spanId(spanId).build();
 		
-		Observation.createNotStarted("my.custom.operation", registry)
-			.contextualName("custom-span-name")
+		Observation.createNotStarted("tracer.test", registry)
+			.contextualName("test-inner-span")
 			.observe(() -> {
 				// 이 안에서 발생하는 로그는 동일한 Trace ID를 공유하며, 별도의 Span으로 측정됩니다.
 				Span newSpan = tracer.currentSpan();
 				if (newSpan != null) {
-					log.debug("##    new traceId: {}, spanId: {}", newSpan.context().traceId(), newSpan.context().spanId());
+					log.debug("##    inner traceId: {}, spanId: {}", newSpan.context().traceId(), newSpan.context().spanId());
 				}
 			});
 		
+		// basic service function call
+		ActuatorTracerResponse basic = actuatorTracerService.basic();
+		log.debug("##    basic traceId: {}, spanId: {}", basic.getTraceId(), basic.getSpanId());
+		
+		// observed service function call
+		ActuatorTracerResponse outter = actuatorTracerService.observed();
+		log.debug("## observed traceId: {}, spanId: {}", outter.getTraceId(), outter.getSpanId());
+		
 		Span after = tracer.currentSpan();
 		if (after != null) {
-			log.debug("##  after traceId: {}, spanId: {}", after.context().traceId(), after.context().spanId());
+			log.debug("##    after traceId: {}, spanId: {}", after.context().traceId(), after.context().spanId());
 		}
 		
-		// ## before traceId: 6a37d4f5faf1276be56ebdcc2336e4ed, spanId: b70bfb828b69e41a
-		// ##    new traceId: 6a37d4f5faf1276be56ebdcc2336e4ed, spanId: 1cdf86ae80fa5275
-		// ##  after traceId: 6a37d4f5faf1276be56ebdcc2336e4ed, spanId: b70bfb828b69e41a
+		// ##   before traceId: 6a37da297cf14bb17607485098536634, spanId: 30f109bd170247b7
+		// ##    inner traceId: 6a37da297cf14bb17607485098536634, spanId: e8dfa46a1d612a15
+		// ##    basic traceId: 6a37da297cf14bb17607485098536634, spanId: 30f109bd170247b7
+		// ## observed traceId: 6a37da297cf14bb17607485098536634, spanId: 3fdf00a092ec1838
+		// ##    after traceId: 6a37da297cf14bb17607485098536634, spanId: 30f109bd170247b7
 		return ResponseEntity.ok(response);
 	}
 	

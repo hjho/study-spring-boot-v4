@@ -46,8 +46,8 @@ public class ActuatorTracerController {
 		
 		Map<String, String> data = Map.of("traceId", traceId, "spanId", spanId);
 		
-		// ## WEB: traceId: 6a37d4f5faf1276be56ebdcc2336e4ed, spanId: e56ebdcc2336e4ed
-		// ## API: traceId: 6a37d4f5faf1276be56ebdcc2336e4ed, spanId: b70bfb828b69e41a
+		// ## WEB: traceId: 6a37da297cf14bb17607485098536634, spanId: 7607485098536634
+		// ## API: traceId: 6a37da297cf14bb17607485098536634, spanId: 30f109bd170247b7
 		return data;
 	}
 	
