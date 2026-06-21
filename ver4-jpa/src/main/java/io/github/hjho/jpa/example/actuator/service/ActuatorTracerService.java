@@ -32,7 +32,7 @@ public class ActuatorTracerService {
 	
 	// name: 메트릭스 이름 (Observation ID)
     // contextualName: Zipkin/Jaeger 등 분산 추적 툴에서 보일 자식 Span ID의 이름
-    @Observed(name = "tracer.test", contextualName = "test-outter-span")
+    @Observed(name = "database.transaction", contextualName = "query-id")
 	public ActuatorTracerResponse observed() {
     	
     	String traceId = "";

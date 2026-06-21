@@ -43,8 +43,8 @@ public class ActuatorTracerController {
 		
 		ActuatorTracerResponse response = ActuatorTracerResponse.builder().traceId(traceId).spanId(spanId).build();
 		
-		Observation.createNotStarted("tracer.test", registry)
-			.contextualName("test-inner-span")
+		Observation.createNotStarted("service.process", registry)
+			.contextualName("process-name")
 			.observe(() -> {
 				// 이 안에서 발생하는 로그는 동일한 Trace ID를 공유하며, 별도의 Span으로 측정됩니다.
 				Span newSpan = tracer.currentSpan();
