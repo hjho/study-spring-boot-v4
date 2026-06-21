@@ -85,3 +85,12 @@ jasypt:
 crypto:
   aes256-key: ENC(df7TkS0My00VH1RPfNmhWCYB/WaOntCQqx24hG39sgg9ng0lGMvfatSz/GrROBQJ6dy3ZHIVUsM6QkhFphslg6qhcrDdkBmSmOYU8HholQQ=) 
   sha256-salt: ENC(2Ix1043+xHB0N/wCWH0ghAmGLbhSyGQ+d+hbTVpmgcFij08cIXqeF8k1AmFWIWzvV7vxmKogXH/sYNbg8oguzhHbYOwQwFkn/mHaixA4bxI=) 
+
+management:
+  tracing:
+    sampling:
+      # 1.0으로 설정해야 모든 요청에 대해 무조건 traceId가 발급됩니다.
+      probability: 1.0  
+    propagation:
+      # Brave 진영의 기본 전파 방식인 B3 헤더 포맷을 명시합니다.
+      type: b3        

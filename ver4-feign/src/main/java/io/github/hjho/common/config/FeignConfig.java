@@ -10,6 +10,7 @@ import feign.codec.ErrorDecoder;
 import io.github.hjho.common.component.FeignCapability;
 import io.github.hjho.common.component.FeignErrorDecoder;
 import io.github.hjho.common.component.FeignHeaderInterceptor;
+import io.micrometer.tracing.Tracer;
 
 @Configuration(proxyBeanMethods = false)
 public class FeignConfig {
@@ -35,8 +36,8 @@ public class FeignConfig {
 	}
 	
 	/* FEIGN Request, Response, Error 인터셉터. */
-	@Bean Capability feignCapability() {
-		return new FeignCapability();
+	@Bean Capability feignCapability(Tracer tracer) {
+		return new FeignCapability(tracer);
 	}
 	
 	/* 타임아웃 설정. (ConnectTimeout, ReadTimeout, FollowRedirects)

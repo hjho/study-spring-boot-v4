@@ -10,10 +10,19 @@ import feign.Util;
 import io.github.hjho.common.model.FeignLogInfo;
 import io.github.hjho.common.util.FeignLogUtils;
 import io.github.hjho.common.util.ModelUtils;
+import io.micrometer.tracing.Span;
+import io.micrometer.tracing.Tracer;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class FeignCapability implements Capability {
+	
+	// io.micrometer.tracing.Tracer
+	private final Tracer tracer;
+	
+	public FeignCapability(Tracer tracer) {
+		this.tracer = tracer;
+	}
 	
 	
 	@Override
@@ -52,7 +61,10 @@ public class FeignCapability implements Capability {
 	 * @throws IOException 
 	 */
 	private void intercept(String type, Request request, Response response, long startTime, Exception e) throws IOException {
-		String traceId  = "";
+		Span span = tracer.currentSpan();
+		
+		String traceId  = (span == null) ? "" : span.context().traceId();
+		String spanId   = (span == null) ? "" : span.context().spanId();
 		String param    = null;
 		String reqBody  = null;
 		String resBody  = null;
@@ -88,6 +100,7 @@ public class FeignCapability implements Capability {
 					// 기본 내용.
 					.type(type)
 					.traceId(traceId)
+					.spanId(spanId)
 					.clientName(request.requestTemplate().feignTarget().name())
 					// 요청 내용.
 					.method(request.httpMethod().name())
@@ -101,7 +114,7 @@ public class FeignCapability implements Capability {
 					.errorMessage(message)
 				.build();
 		
-		log.info("##### [{}]: {}", type, ModelUtils.toJsonString(feignLogInfo));
+		log.info("[{}]: {}", type, ModelUtils.toJsonString(feignLogInfo));
 		// ##### [REQUEST_FEIGN]: {"type":"REQUEST_FEIGN","traceId":"","clientName":"thread-sleep","method":"GET","url":"http://localhost:8090/example/test/thread-sleeps?name=heopanman","duration":0,"status":0,"requestParam":"name=heopanman"}
 		// ##### [RESPONSE_FEIGN]: {"type":"RESPONSE_FEIGN","traceId":"","clientName":"thread-sleep","method":"GET","url":"http://localhost:8090/example/test/thread-sleeps?name=heopanman","duration":5004,"status":200,"responseBody":{"seconds":"5","message":"seconds sleep,,,"}}
 	}

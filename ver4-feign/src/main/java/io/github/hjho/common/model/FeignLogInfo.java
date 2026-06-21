@@ -13,7 +13,8 @@ public class FeignLogInfo {
 	
 	// 기본 정보
 	private String type;     	 // "REQUEST_FEIGN"|"RESPONSE_FEIGN"|"ERROR_FEIGN"
-    private String traceId;      // 서비스 간 추적용 ID
+    private String traceId;      // 서비스 간 추적용 trace ID
+    private String spanId;      // 서비스 간 추적용 span ID
     private String clientName;   // 어떤 FeignClient인지
     private String method;       // GET, POST...
     private String url;          // 호출 URL

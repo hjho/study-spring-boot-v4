@@ -18,3 +18,25 @@ spring:
     suffix: .html
     mode: HTML5
     cache: false
+
+  cloud:
+    openfeign:
+      micrometer:
+        # Feign 요청 시 관찰(Observation) 데이터를 생성하도록 설정
+        enabled: true 
+
+management:
+  tracing:
+    sampling:
+      # 1.0으로 설정해야 모든 요청에 대해 무조건 traceId가 발급됩니다.
+      probability: 1.0  
+    propagation:
+      # Brave 진영의 기본 전파 방식인 B3 헤더 포맷을 명시합니다.
+      type: b3        
+  
+#logging:
+#  pattern:
+#    # MDC에 들어있는 traceId와 spanId를 로그에 찍도록 설정
+#    # [%X{traceId:-}, %X{spanId:-}] 이 부분이 핵심입니다.
+#    level: "%5p [${spring.application.name:-} [%X{traceId:-} %X{spanId:-}]]"
+ 
