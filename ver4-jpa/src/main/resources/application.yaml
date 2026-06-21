@@ -81,3 +81,7 @@ springdoc:
 jasypt:
   encryptor:
     password: ${INIT_KEY:default}
+
+crypto:
+  aes256-key: ENC(df7TkS0My00VH1RPfNmhWCYB/WaOntCQqx24hG39sgg9ng0lGMvfatSz/GrROBQJ6dy3ZHIVUsM6QkhFphslg6qhcrDdkBmSmOYU8HholQQ=) 
+  sha256-salt: ENC(2Ix1043+xHB0N/wCWH0ghAmGLbhSyGQ+d+hbTVpmgcFij08cIXqeF8k1AmFWIWzvV7vxmKogXH/sYNbg8oguzhHbYOwQwFkn/mHaixA4bxI=) 
