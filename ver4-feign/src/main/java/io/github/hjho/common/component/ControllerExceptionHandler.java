@@ -2,12 +2,14 @@ package io.github.hjho.common.component;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import feign.FeignException;
 import io.github.hjho.common.exception.ModelAndViewException;
@@ -63,6 +65,16 @@ public class ControllerExceptionHandler {
 			model.addAttribute("message", errorResponse);
 			return "/error/common";
 		}
+	}
+	
+	@ExceptionHandler(NoResourceFoundException.class)
+	public ModelAndView handlerNoResourceFoundException(HttpServletRequest request, HttpServletResponse response, NoResourceFoundException e) {
+		String uri = StringUtils.defaultString(request.getRequestURI());
+		if(uri.endsWith("favicon.ico")) {
+			return new ModelAndView("jsonView");
+		}
+		
+		return this.handlerException(request, response, e);
 	}
 	
 	@ExceptionHandler(Exception.class)
